@@ -2,7 +2,7 @@
     "name": "HNY-AI",    
     "env": {
         "STRING": {
-            "description": "Pyrrogram String session of your account",
+            "description": "Pyrogram String session of your account",
             "required": true
         },        
         "MONGO_URL": {
