@@ -1,10 +1,10 @@
 {
-    "name": "HnYAI",    
+    "name": "VickMachineBot",    
     "env": {
-        "BOT_TOKEN": {
-            "description": "telegram bot token here",
+        "STRING": {
+            "description": "Pyrrogram String session of your account",
             "required": true
-        },       
+        },        
         "MONGO_URL": {
             "description": "mongo db url here",
             "required": true
