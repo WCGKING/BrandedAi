@@ -1,5 +1,5 @@
 {
-    "name": "VickMachineBot",    
+    "name": "HNY-AI",    
     "env": {
         "STRING": {
             "description": "Pyrrogram String session of your account",
