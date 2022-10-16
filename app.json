@@ -1,7 +1,6 @@
 {
     "name": "Vick-Ai", 
     "logo": "https://te.legra.ph/file/1fe7ba504e18d33aeb761.png"
-    "description": "An Advanced Telegram Chatbot."
     "env": {
         "STRING": {
             "description": "Pyrogram String session of your account",
