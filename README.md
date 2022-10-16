@@ -1,5 +1,5 @@
 # About
-An Advanced Telegram AI Chatbot Open Source Code
+An Advanced Telegram Id Chatbot Open Source Code.
 
 ## How To Host
 The easiest way to deploy this Bot
