@@ -34,8 +34,8 @@ async def start(client, message):
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
     & ~filters.private)
 async def chatbotofd(client, message):
-    vickdb = MongoClient(MONGO_URL)    
-    vick = vickdb["VickDb"]["Vick"]     
+    brandeddb = MongoClient(MONGO_URL)    
+    branded = brandeddb["brandedDb"]["branded"]     
     if message.from_user:
         user = message.from_user.id
         chat_id = message.chat.id
@@ -45,11 +45,11 @@ async def chatbotofd(client, message):
            return await message.reply_text(
                 "You are not admin"
             )
-    is_vick = vick.find_one({"chat_id": message.chat.id})
-    if not is_vick:
-        vick.insert_one({"chat_id": message.chat.id})
+    is_branded = branded.find_one({"chat_id": message.chat.id})
+    if not is_branded:
+        branded.insert_one({"chat_id": message.chat.id})
         await message.reply_text(f"Chatbot Disabled!")
-    if is_vick:
+    if is_branded:
         await message.reply_text(f"ChatBot Is Already Disabled")
     
 
@@ -57,8 +57,8 @@ async def chatbotofd(client, message):
     filters.command("chatbot on", prefixes=["/", ".", "?", "-"])
     & ~filters.private)
 async def chatboton(client, message):
-    vickdb = MongoClient(MONGO_URL)    
-    vick = vickdb["VickDb"]["Vick"]     
+    brandeddb = MongoClient(MONGO_URL)    
+    branded = brandeddb["brandedDb"]["branded"]     
     if message.from_user:
         user = message.from_user.id
         chat_id = message.chat.id
@@ -68,11 +68,11 @@ async def chatboton(client, message):
             return await message.reply_text(
                 "You are not admin"
             )
-    is_vick = vick.find_one({"chat_id": message.chat.id})
-    if not is_vick:           
+    is_branded = branded.find_one({"chat_id": message.chat.id})
+    if not is_branded:           
         await message.reply_text(f"Chatbot Is Already Enabled")
-    if is_vick:
-        vick.delete_one({"chat_id": message.chat.id})
+    if is_branded:
+        branded.delete_one({"chat_id": message.chat.id})
         await message.reply_text(f"ChatBot Is Enable!")
     
 
@@ -91,16 +91,16 @@ async def chatbot(client, message):
     & ~filters.private
     & ~filters.bot,
 )
-async def vickai(client: Client, message: Message):
+async def branded(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       vickdb = MongoClient(MONGO_URL)
-       vick = vickdb["VickDb"]["Vick"] 
-       is_vick = vick.find_one({"chat_id": message.chat.id})
-       if not is_vick:
+       brandeddb = MongoClient(MONGO_URL)
+       branded = brandeddb["brandedDb"]["branded"] 
+       is_branded = branded.find_one({"chat_id": message.chat.id})
+       if not is_branded:
            await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.text})  
@@ -117,13 +117,13 @@ async def vickai(client: Client, message: Message):
                    await message.reply_text(f"{hey}")
    
    if message.reply_to_message:  
-       vickdb = MongoClient(MONGO_URL)
-       vick = vickdb["VickDb"]["Vick"] 
-       is_vick = vick.find_one({"chat_id": message.chat.id})    
+       brandeddb = MongoClient(MONGO_URL)
+       branded = brandeddb["brandedDb"]["branded"] 
+       is_branded = branded.find_one({"chat_id": message.chat.id})    
        getme = await bot.get_me()
        bot_id = getme.id                             
        if message.reply_to_message.from_user.id == bot_id: 
-           if not is_vick:                   
+           if not is_branded:                   
                await bot.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
@@ -157,16 +157,16 @@ async def vickai(client: Client, message: Message):
     & ~filters.private
     & ~filters.bot,
 )
-async def vickstickerai(client: Client, message: Message):
+async def brandedstickerai(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       vickdb = MongoClient(MONGO_URL)
-       vick = vickdb["VickDb"]["Vick"] 
-       is_vick = vick.find_one({"chat_id": message.chat.id})
-       if not is_vick:
+       brandeddb = MongoClient(MONGO_URL)
+       branded = brandeddb["brandedDb"]["branded"] 
+       is_branded = branded.find_one({"chat_id": message.chat.id})
+       if not is_branded:
            await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.sticker.file_unique_id})      
@@ -183,13 +183,13 @@ async def vickstickerai(client: Client, message: Message):
                    await message.reply_sticker(f"{hey}")
    
    if message.reply_to_message:
-       vickdb = MongoClient(MONGO_URL)
-       vick = vickdb["VickDb"]["Vick"] 
-       is_vick = vick.find_one({"chat_id": message.chat.id})
+       brandeddb = MongoClient(MONGO_URL)
+       branded = brandeddb["brandedDb"]["branded"] 
+       is_branded = branded.find_one({"chat_id": message.chat.id})
        getme = await bot.get_me()
        bot_id = getme.id
        if message.reply_to_message.from_user.id == bot_id: 
-           if not is_vick:                    
+           if not is_branded:                    
                await bot.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
@@ -224,7 +224,7 @@ async def vickstickerai(client: Client, message: Message):
     & filters.private
     & ~filters.bot,
 )
-async def vickprivate(client: Client, message: Message):
+async def brandedprivate(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]
@@ -267,7 +267,7 @@ async def vickprivate(client: Client, message: Message):
     & filters.private
     & ~filters.bot,
 )
-async def vickprivatesticker(client: Client, message: Message):
+async def brandedprivatesticker(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"] 
