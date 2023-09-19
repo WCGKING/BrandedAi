@@ -1,7 +1,10 @@
+<h2 align="center">
+    ──「 𝗕𝗥𝗔𝗡𝗗𝗘𝗗 𝗜'𝗗 𝗖𝗛𝗔𝗧 𝗕𝗢𝗧 」──
+
+
 # About
 An Advanced Telegram Id Chatbot Open Source Code.
-<h2 align="center">
-    ──「 𝓑𝓡𝓐𝓝𝓓𝓔𝓓 𝓘'𝓓 𝓒𝓗𝓐𝓣 𝓑𝓞𝓣 」──
+
 ## How To Host
 The easiest way to deploy this Bot
 • Enter your ```MONGO_URL```,```API_ID```,  ```API_HASH``` And ```SESSION```.
