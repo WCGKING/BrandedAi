@@ -1,1 +1,1 @@
-Vick: python3 main.py
+BRANDED: python3 main.py
