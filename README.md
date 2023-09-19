@@ -1,7 +1,7 @@
 <h2 align="center">
     ──「 𝗕𝗥𝗔𝗡𝗗𝗘𝗗 𝗜'𝗗 𝗖𝗛𝗔𝗧 𝗕𝗢𝗧 」──
 
-    <img src="https://te.legra.ph/file/2e2f78610814092d61103.jpg">
+<img src="https://te.legra.ph/file/2e2f78610814092d61103.jpg">
 </p>
 
 # About
