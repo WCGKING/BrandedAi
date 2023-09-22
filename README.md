@@ -26,3 +26,20 @@
 <p align="center">
 <a href="https://t.me/BRANDRD_BOT"><img src="https://img.shields.io/badge/-Support%20Channel-blue.svg?style=for-the-badge&logo=Telegram"></a>
 </p>
+
+
+
+<h3 align="center">
+    ─「 ᴅᴇᴩʟᴏʏ ᴏɴ ʟᴏᴄᴀʟ ʜᴏsᴛ/ ᴠᴘs 」─
+</h3>
+
+- Get your [Necessary Variables](https://github.com/WCGKING/BRANDED-AI/blob/master/sample.env)
+
+- Upgrade and Update by : sudo apt-get update && sudo apt-get upgrade -y
+- Clone the repository by : git clone https://github.com/WCGKING/BRANDED-AI
+- Install requirements by : pip3 install -U -r requirements.txt
+- Fill your variables in the env by : vi sample.env , Press I on the keyboard for editing env  , Press Ctrl+C when you're done with editing env and :wq to save the env
+- Rename the env file by : mv sample.env .env
+- Install tmux to keep running your bot when you close the terminal by : sudo apt install tmux && tmux
+- Finally run the bot by : bash branded king
+- For getting out from tmux session : Press Ctrl+b and then d
