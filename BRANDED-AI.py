@@ -30,10 +30,10 @@ async def chatbot(client, message):
     await message.delete()
     Aloneai = await message.reply("🤭🤏✌️")
     await asyncio.sleep(1)
-    await BRANDED-AI.edit("**ʙᴏʜᴀᴛ ᴛᴀɪᴊ ʜᴏ ʀᴇᴘᴏ ᴄʜᴀʜɪʏᴇ**")
+    await BRANDED.edit("**ʙᴏʜᴀᴛ ᴛᴀɪᴊ ʜᴏ ʀᴇᴘᴏ ᴄʜᴀʜɪʏᴇ**")
     await asyncio.sleep(1)
-    await BRANDED-AI.edit("**ɪ ᴀᴍ ᴅᴏɪɴɢ ᴍʏ ʟᴏᴠᴇ 💕**")
-    await BRANDED-AI.delete()
+    await BRANDED.edit("**ɪ ᴀᴍ ᴅᴏɪɴɢ ᴍʏ ʟᴏᴠᴇ 💕**")
+    await BRANDED.delete()
     await asyncio.sleep(2)
     umm = await message.reply_sticker("")
     await asyncio.sleep(2)
@@ -41,7 +41,7 @@ async def chatbot(client, message):
         photo=f"https://telegra.ph//file/9e8ce3092848a1bc5d9d6.jpg",
         caption=f"""━━━━━━━━━━━━━━━━━━━━━━━━
 👻 A ᴘᴏᴡᴇʀғᴜʟ ᴀɪ ʙᴏᴛ
-ᴏғ ♻️ ᴀʟᴏɴᴇ ♥️
+ᴏғ ♻️ ʙʀᴀɴᴅᴇᴅ ᴋɪɴɢ ♥️
 ━━━━━━━━━━━━━━━━━
 ᴅᴀᴛᴀʙᴀsᴇ ʙᴀᴄᴋᴇɴᴅ ʙᴏᴛ ғᴏʀ ᴛɢ...
 ┏━━━━━━━━━━━━━━━━━┓
