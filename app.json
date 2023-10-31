@@ -2,9 +2,15 @@
     "name": "BRANDED-AI", 
     "logo": "https://te.legra.ph/file/e3c1ae96d329acd2d99cf.jpg",
     "description": "An Advanced Telegram UserId Chatbot.",
+    "keywords": [
+    "telegram",
+    "bot",
+    "python",
+    "pyrogram"
+  ],
     "env": {
-        "STRING": {
-            "description": "Pyrogram String session of your account @BRANDEDSTRINGSESSION_BOT",
+        "SESSION_NAME": {
+            "description": "Pyrogram string session get it from @BRANDEDSTRINGSESSION_BOT",
             "required": true
         },        
         "MONGO_URL": {
