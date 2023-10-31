@@ -30,10 +30,10 @@ async def chatbot(client, message):
     await message.delete()
     Aloneai = await message.reply("🤭🤏✌️")
     await asyncio.sleep(1)
-    await Aloneai.edit("**ʙᴏʜᴀᴛ ᴛᴀɪᴊ ʜᴏ ʀᴇᴘᴏ ᴄʜᴀʜɪʏᴇ**")
+    await BRANDED-AI.edit("**ʙᴏʜᴀᴛ ᴛᴀɪᴊ ʜᴏ ʀᴇᴘᴏ ᴄʜᴀʜɪʏᴇ**")
     await asyncio.sleep(1)
-    await Aloneai.edit("**ɪ ᴀᴍ ᴅᴏɪɴɢ ᴍʏ ʟᴏᴠᴇ 💕**")
-    await Aloneai.delete()
+    await BRANDED-AI.edit("**ɪ ᴀᴍ ᴅᴏɪɴɢ ᴍʏ ʟᴏᴠᴇ 💕**")
+    await BRANDED-AI.delete()
     await asyncio.sleep(2)
     umm = await message.reply_sticker("")
     await asyncio.sleep(2)
@@ -45,14 +45,14 @@ async def chatbot(client, message):
 ━━━━━━━━━━━━━━━━━
 ᴅᴀᴛᴀʙᴀsᴇ ʙᴀᴄᴋᴇɴᴅ ʙᴏᴛ ғᴏʀ ᴛɢ...
 ┏━━━━━━━━━━━━━━━━━┓
-┣★ ᴄʀᴇᴀᴛᴇʀ [ᴀʟᴏɴᴇ](https://t.me/ALONE_WAS_BOT
-┣★ ʙᴏᴛ ᴜᴘᴅᴀᴛᴇs [ᴏᴜʀ ᴏᴛʜᴇʀ ʙᴏᴛs](https://t.me/AloneXBots)
-┣★ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ [ᴄʜᴀᴛ](https://t.me/AlonesHeaven)
+┣★ ᴄʀᴇᴀᴛᴇʀ [ʙʀᴀɴᴅᴇᴅ ᴋɪɴɢ](https://t.me/BRANDEDKING82
+┣★ ʙᴏᴛ ᴜᴘᴅᴀᴛᴇs [ᴏᴜʀ ᴏᴛʜᴇʀ ʙᴏᴛs](https://t.me/BRANDRD_BOT)
+┣★ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ [ᴄʜᴀᴛ](https://t.me/BRANDED_WORLD)
 ┗━━━━━━━━━━━━━━━━━┛
 🥵
-IF HAVE ANY QUESTION THEN CONTACT » TO » MY » [OWNER] @ALONE_WAS_BOT""",
+IF HAVE ANY QUESTION THEN CONTACT » TO » MY » [OWNER] @BRANDEDKING82""",
         reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("💟 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💟", url=f"https://t.me/AlonesHeaven")]]
+            [[InlineKeyboardButton("💟 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💟", url=f"https://t.me/BRANDED_WORLD")]]
         ),
     ) 
 
@@ -79,10 +79,10 @@ async def Aloneai(client: Client, message: Message):
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       Alonedb = MongoClient(MONGO_URL)
-       Alone = Alonedb["AloneDb"]["Alone"] 
-       is_Alone = Alone.find_one({"chat_id": message.chat.id})
-       if not is_Alone:
+       Brandeddb = MongoClient(MONGO_URL)
+       Branded = Brandeddb["BrandedDb"]["Branded"] 
+       is_Branded = Branded.find_one({"chat_id": message.chat.id})
+       if not is_Branded:
            await client.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.text})  
@@ -99,13 +99,13 @@ async def Aloneai(client: Client, message: Message):
                    await message.reply_text(f"{hey}")
    
    if message.reply_to_message:  
-       Alonedb = MongoClient(MONGO_URL)
-       Alone = Alonedb["AloneDb"]["Alone"] 
-       is_Alone = Alone.find_one({"chat_id": message.chat.id})    
+       Brandeddb = MongoClient(MONGO_URL)
+       Branded = Brandeddb["BrandedDb"]["Branded"] 
+       is_Branded = Branded.find_one({"chat_id": message.chat.id})    
        getme = await client.get_me()
        user_id = getme.id                             
        if message.reply_to_message.from_user.id == user_id: 
-           if not is_Alone:                   
+           if not is_Branded:                   
                await client.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
@@ -139,16 +139,16 @@ async def Aloneai(client: Client, message: Message):
     & ~filters.me
     & ~filters.bot,
 )
-async def Alonestickerai(client: Client, message: Message):
+async def Brandedstickerai(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       Alonedb = MongoClient(MONGO_URL)
-       Alone = Alonedb["AloneDb"]["Alone"] 
-       is_Alone = Alone.find_one({"chat_id": message.chat.id})
-       if not is_Alone:
+       Brandeddb = MongoClient(MONGO_URL)
+       Branded = Brandeddb["BrandedDb"]["Branded"] 
+       is_Branded = Branded.find_one({"chat_id": message.chat.id})
+       if not is_Branded:
            await client.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.sticker.file_unique_id})      
@@ -165,13 +165,13 @@ async def Alonestickerai(client: Client, message: Message):
                    await message.reply_sticker(f"{hey}")
    
    if message.reply_to_message:
-       Alonedb = MongoClient(MONGO_URL)
-       Alone = Alonedb["AloneDb"]["Alone"] 
+       Brandeddb = MongoClient(MONGO_URL)
+       Branded = Brandeddb["BrandedDb"]["Branded"] 
        is_Alone = Alone.find_one({"chat_id": message.chat.id})
        getme = await client.get_me()
        user_id = getme.id
        if message.reply_to_message.from_user.id == user_id: 
-           if not is_Alone:                    
+           if not is_Branded:                    
                await client.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
@@ -207,7 +207,7 @@ async def Alonestickerai(client: Client, message: Message):
     & ~filters.me
     & ~filters.bot,
 )
-async def Aloneprivate(client: Client, message: Message):
+async def Brandedprivate(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]
@@ -250,7 +250,7 @@ async def Aloneprivate(client: Client, message: Message):
     & ~filters.me
     & ~filters.bot,
 )
-async def Aloneprivatesticker(client: Client, message: Message):
+async def Brandedprivatesticker(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"] 
