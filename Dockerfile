@@ -10,4 +10,4 @@ COPY . /app
 WORKDIR /app
 RUN pip3 install --upgrade pip
 RUN pip3 install -U -r requirements.txt
-CMD python3 -m BRANDED-AI
+CMD python3 -m BrandedAi
