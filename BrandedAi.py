@@ -23,14 +23,14 @@ try:
 
     # Start the bot
     bot.run()
-            except errors.APIException as e:
-            print(f"API Exception: {e}")
-            except RPCError as e:
-            print(f"RPC Error: {e}")
-            except FloodWait as e:
-            print(f"FloodWait: {e}")
-            except Exception as e:
-            print(f"An error occurred: {e}")
+except errors.APIException as e:
+    print(f"API Exception: {e}")
+except RPCError as e:
+    print(f"RPC Error: {e}")
+except FloodWait as e:
+    print(f"FloodWait: {e}")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
