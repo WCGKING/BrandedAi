@@ -21,16 +21,9 @@ try:
         # Your message handling logic here
         pass
 
-    # Start the bot
-    bot.run()
-except errors.APIException as e:
-    print(f"API Exception: {e}")
-except RPCError as e:
-    print(f"RPC Error: {e}")
-except FloodWait as e:
-    print(f"FloodWait: {e}")
-except Exception as e:
-    print(f"An error occurred: {e}")
+   @bot.on_message(filters.command("start"))
+async def start(client, message):
+        await bot.join_chat("BRANDRD_BOT", "BRANDED_WORLD")
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
