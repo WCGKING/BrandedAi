@@ -14,9 +14,9 @@ try:
         api_id=API_ID,
         api_hash=API_HASH,
         storage=types.MemoryStorage()
-)
+ )
 
-async def is_admins(chat_id: int):
+ async def is_admins(chat_id: int):
     return [
         member.user.id
         async for member in bot.iter_chat_members(
