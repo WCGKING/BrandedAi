@@ -1,5 +1,5 @@
 flask==2.2.5
-werkzeug==2.0.3
+werkzeug==2.3.8
 aiohttp
 pyrogram==1.4.16
 pymongo
