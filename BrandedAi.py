@@ -1,89 +1,107 @@
 from pyrogram import Client, filters
-import asyncio
 from pyrogram.types import *
 from pymongo import MongoClient
 import requests
 import random
-from pyrogram.errors import (
-    PeerIdInvalid,
-    ChatWriteForbidden
-)
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden
 import os
 import re
 
 
-API_ID = os.environ.get("API_ID", "25515770") 
-API_HASH = os.environ.get("API_HASH", "adb1dc85efc79c30a75e9c3b3bc794ac") 
-SESSION_NAME = os.environ.get("SESSION_NAME", "BQAGeUL5hZasQMYxOGvgD--XnHBPUtCYJPdmkU6gqQWUwuq5bcernf9MYLfacI7TGhVdYuZ9PA4F1B75gSuGCsNYpPXcYPFBcycl4CVEgIg5lKbCKsdopXG1qYRw6INWq1ATiF5Nd2t751AH0G8s478q9wztNZmmrucj9zEMLLoGckDAZWAOzZ6E1QAUfMugGId35JPWnpaI7JPvFeGrapnxj4wG9IZJUoeW7KFsoISg6P7EaKb7hp2Wr4BYdQth3U81RyypEcgOzbZc4kS3XubPGFU3fl0rSXBzy74SmcUo82YYJ44WH6MNDULS4kPW8nX_vAVTBh_GzBGmpQi-cR8TAAAAAWS9xn0A")
-MONGO_URL = os.environ.get("MONGO_URL", "mongodb+srv://BrandedSupportGroup:BRANDED_WORLD@cluster0.v4odcq9.mongodb.net/?retryWrites=true&w=majority") 
+API_ID = os.environ.get("API_ID", None) 
+API_HASH = os.environ.get("API_HASH", None) 
+STRING = os.environ.get("STRING", None) 
+MONGO_URL = os.environ.get("MONGO_URL", None)
 
 
-client = Client(SESSION_NAME, API_ID, API_HASH)
+bot = Client(STRING, API_ID, API_HASH)
 
 
-@client.on_message(
-    filters.command("repo", prefixes=["/", ".", "?", "-"])
+async def is_admins(chat_id: int):
+    return [
+        member.user.id
+        async for member in bot.iter_chat_members(
+            chat_id, filter="administrators"
+        )
+    ]
+
+
+@bot.on_message(filters.command("start"))
+async def start(client, message):
+        await bot.join_chat("BRANDRD-BOT", "BRANDED_WORLD")
+
+
+@bot.on_message(
+    filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
+    & ~filters.private)
+async def chatbotofd(client, message):
+    vickdb = MongoClient(MONGO_URL)    
+    vick = vickdb["VickDb"]["Vick"]     
+    if message.from_user:
+        user = message.from_user.id
+        chat_id = message.chat.id
+        if user not in (
+           await is_admins(chat_id)
+        ):
+           return await message.reply_text(
+                "You are not admin"
+            )
+    is_vick = vick.find_one({"chat_id": message.chat.id})
+    if not is_vick:
+        vick.insert_one({"chat_id": message.chat.id})
+        await message.reply_text(f"Chatbot Disabled!")
+    if is_vick:
+        await message.reply_text(f"ChatBot Is Already Disabled")
+    
+
+@bot.on_message(
+    filters.command("chatbot on", prefixes=["/", ".", "?", "-"])
+    & ~filters.private)
+async def chatboton(client, message):
+    vickdb = MongoClient(MONGO_URL)    
+    vick = vickdb["VickDb"]["Vick"]     
+    if message.from_user:
+        user = message.from_user.id
+        chat_id = message.chat.id
+        if user not in (
+            await is_admins(chat_id)
+        ):
+            return await message.reply_text(
+                "You are not admin"
+            )
+    is_vick = vick.find_one({"chat_id": message.chat.id})
+    if not is_vick:           
+        await message.reply_text(f"Chatbot Is Already Enabled")
+    if is_vick:
+        vick.delete_one({"chat_id": message.chat.id})
+        await message.reply_text(f"ChatBot Is Enable!")
+    
+
+@bot.on_message(
+    filters.command("chatbot", prefixes=["/", ".", "?", "-"])
     & ~filters.private)
 async def chatbot(client, message):
-    await message.delete()
-    Aloneai = await message.reply("🤭🤏✌️")
-    await asyncio.sleep(1)
-    await Branded.edit("**ʙᴏʜᴀᴛ ᴛᴀɪᴊ ʜᴏ ʀᴇᴘᴏ ᴄʜᴀʜɪʏᴇ**")
-    await asyncio.sleep(1)
-    await Branded.edit("**ɪ ᴀᴍ ᴅᴏɪɴɢ ᴍʏ ʟᴏᴠᴇ 💕**")
-    await Branded.delete()
-    await asyncio.sleep(2)
-    umm = await message.reply_sticker("")
-    await asyncio.sleep(2)
-    await message.reply_photo(
-        photo=f"https://telegra.ph//file/9e8ce3092848a1bc5d9d6.jpg",
-        caption=f"""━━━━━━━━━━━━━━━━━━━━━━━━
-👻 A ᴘᴏᴡᴇʀғᴜʟ ᴀɪ ʙᴏᴛ
-ᴏғ ♻️ ʙʀᴀɴᴅᴇᴅ ᴋɪɴɢ ♥️
-━━━━━━━━━━━━━━━━━
-ᴅᴀᴛᴀʙᴀsᴇ ʙᴀᴄᴋᴇɴᴅ ʙᴏᴛ ғᴏʀ ᴛɢ...
-┏━━━━━━━━━━━━━━━━━┓
-┣★ ᴄʀᴇᴀᴛᴇʀ [ʙʀᴀɴᴅᴇᴅ ᴋɪɴɢ](https://t.me/BRANDEDKING82
-┣★ ʙᴏᴛ ᴜᴘᴅᴀᴛᴇs [ᴏᴜʀ ᴏᴛʜᴇʀ ʙᴏᴛs](https://t.me/BRANDRD_BOT)
-┣★ sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ [ᴄʜᴀᴛ](https://t.me/BRANDED_WORLD)
-┗━━━━━━━━━━━━━━━━━┛
-🥵
-IF HAVE ANY QUESTION THEN CONTACT » TO » MY » [OWNER] @BRANDEDKING82""",
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("💟 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ 💟", url=f"https://t.me/BRANDED_WORLD")]]
-        ),
-    ) 
+    await message.reply_text(f"**Usage:**\n/chatbot [on|off] only group")
 
 
-@client.on_message(
-    filters.command("alive", prefixes=["/", ".", "?", "-"])
-    & ~filters.private)
-async def start(client, message):
-    await message.reply_text(f"**ᴀʟᴏɴᴇ ɪs ᴀʟɪᴠᴇ**")
-    
-    
-@client.on_message(
+@bot.on_message(
  (
         filters.text
         | filters.sticker
     )
     & ~filters.private
-    & ~filters.me
     & ~filters.bot,
 )
-async def Aloneai(client: Client, message: Message):
+async def vickai(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       Brandeddb = MongoClient(MONGO_URL)
-       Branded = Brandeddb["BrandedDb"]["Branded"] 
-       is_Branded = Branded.find_one({"chat_id": message.chat.id})
-       if not is_Branded:
-           await client.send_chat_action(message.chat.id, "typing")
+       vickdb = MongoClient(MONGO_URL)
+       vick = vickdb["VickDb"]["Vick"] 
+       is_vick = vick.find_one({"chat_id": message.chat.id})
+       if not is_vick:
+           await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.text})  
            k = chatai.find_one({"word": message.text})      
@@ -99,14 +117,14 @@ async def Aloneai(client: Client, message: Message):
                    await message.reply_text(f"{hey}")
    
    if message.reply_to_message:  
-       Brandeddb = MongoClient(MONGO_URL)
-       Branded = Brandeddb["BrandedDb"]["Branded"] 
-       is_Branded = Branded.find_one({"chat_id": message.chat.id})    
-       getme = await client.get_me()
-       user_id = getme.id                             
-       if message.reply_to_message.from_user.id == user_id: 
-           if not is_Branded:                   
-               await client.send_chat_action(message.chat.id, "typing")
+       vickdb = MongoClient(MONGO_URL)
+       vick = vickdb["VickDb"]["Vick"] 
+       is_vick = vick.find_one({"chat_id": message.chat.id})    
+       getme = await bot.get_me()
+       bot_id = getme.id                             
+       if message.reply_to_message.from_user.id == bot_id: 
+           if not is_vick:                   
+               await bot.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
                k = chatai.find_one({"word": message.text})      
@@ -120,7 +138,7 @@ async def Aloneai(client: Client, message: Message):
                        await message.reply_sticker(f"{hey}")
                    if not Yo == "sticker":
                        await message.reply_text(f"{hey}")
-       if not message.reply_to_message.from_user.id == user_id:          
+       if not message.reply_to_message.from_user.id == bot_id:          
            if message.sticker:
                is_chat = chatai.find_one({"word": message.reply_to_message.text, "id": message.sticker.file_unique_id})
                if not is_chat:
@@ -128,28 +146,28 @@ async def Aloneai(client: Client, message: Message):
            if message.text:                 
                is_chat = chatai.find_one({"word": message.reply_to_message.text, "text": message.text})                 
                if not is_chat:
-                   chatai.insert_one({"word": message.reply_to_message.text, "text": message.text, "check": "none"})                                                                                                                                               
+                   chatai.insert_one({"word": message.reply_to_message.text, "text": message.text, "check": "none"})    
+               
 
-@client.on_message(
+@bot.on_message(
  (
         filters.sticker
         | filters.text
     )
     & ~filters.private
-    & ~filters.me
     & ~filters.bot,
 )
-async def Brandedstickerai(client: Client, message: Message):
+async def vickstickerai(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]   
 
    if not message.reply_to_message:
-       Brandeddb = MongoClient(MONGO_URL)
-       Branded = Brandeddb["BrandedDb"]["Branded"] 
-       is_Branded = Branded.find_one({"chat_id": message.chat.id})
-       if not is_Branded:
-           await client.send_chat_action(message.chat.id, "typing")
+       vickdb = MongoClient(MONGO_URL)
+       vick = vickdb["VickDb"]["Vick"] 
+       is_vick = vick.find_one({"chat_id": message.chat.id})
+       if not is_vick:
+           await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.sticker.file_unique_id})      
            k = chatai.find_one({"word": message.text})      
@@ -165,14 +183,14 @@ async def Brandedstickerai(client: Client, message: Message):
                    await message.reply_sticker(f"{hey}")
    
    if message.reply_to_message:
-       Brandeddb = MongoClient(MONGO_URL)
-       Branded = Brandeddb["BrandedDb"]["Branded"] 
-       is_Alone = Alone.find_one({"chat_id": message.chat.id})
-       getme = await client.get_me()
-       user_id = getme.id
-       if message.reply_to_message.from_user.id == user_id: 
-           if not is_Branded:                    
-               await client.send_chat_action(message.chat.id, "typing")
+       vickdb = MongoClient(MONGO_URL)
+       vick = vickdb["VickDb"]["Vick"] 
+       is_vick = vick.find_one({"chat_id": message.chat.id})
+       getme = await bot.get_me()
+       bot_id = getme.id
+       if message.reply_to_message.from_user.id == bot_id: 
+           if not is_vick:                    
+               await bot.send_chat_action(message.chat.id, "typing")
                K = []  
                is_chat = chatai.find({"word": message.text})
                k = chatai.find_one({"word": message.text})      
@@ -186,7 +204,7 @@ async def Brandedstickerai(client: Client, message: Message):
                        await message.reply_text(f"{hey}")
                    if not Yo == "text":
                        await message.reply_sticker(f"{hey}")
-       if not message.reply_to_message.from_user.id == user_id:          
+       if not message.reply_to_message.from_user.id == bot_id:          
            if message.text:
                is_chat = chatai.find_one({"word": message.reply_to_message.sticker.file_unique_id, "text": message.text})
                if not is_chat:
@@ -195,24 +213,23 @@ async def Brandedstickerai(client: Client, message: Message):
                is_chat = chatai.find_one({"word": message.reply_to_message.sticker.file_unique_id, "text": message.sticker.file_id})                 
                if not is_chat:
                    chatai.insert_one({"word": message.reply_to_message.sticker.file_unique_id, "text": message.sticker.file_id, "check": "none"})    
-              
+               
 
 
-@client.on_message(
+@bot.on_message(
     (
         filters.text
         | filters.sticker
     )
     & filters.private
-    & ~filters.me
     & ~filters.bot,
 )
-async def Brandedprivate(client: Client, message: Message):
+async def vickprivate(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"]
    if not message.reply_to_message: 
-       await client.send_chat_action(message.chat.id, "typing")
+       await bot.send_chat_action(message.chat.id, "typing")
        K = []  
        is_chat = chatai.find({"word": message.text})                 
        for x in is_chat:
@@ -225,10 +242,10 @@ async def Brandedprivate(client: Client, message: Message):
        if not Yo == "sticker":
            await message.reply_text(f"{hey}")
    if message.reply_to_message:            
-       getme = await client.get_me()
-       user_id = getme.id       
-       if message.reply_to_message.from_user.id == user_id:                    
-           await client.send_chat_action(message.chat.id, "typing")
+       getme = await bot.get_me()
+       bot_id = getme.id       
+       if message.reply_to_message.from_user.id == bot_id:                    
+           await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.text})                 
            for x in is_chat:
@@ -240,22 +257,22 @@ async def Brandedprivate(client: Client, message: Message):
                await message.reply_sticker(f"{hey}")
            if not Yo == "sticker":
                await message.reply_text(f"{hey}")
-                     
-@client.on_message(
+       
+
+@bot.on_message(
  (
         filters.sticker
         | filters.text
     )
     & filters.private
-    & ~filters.me
     & ~filters.bot,
 )
-async def Brandedprivatesticker(client: Client, message: Message):
+async def vickprivatesticker(client: Client, message: Message):
 
    chatdb = MongoClient(MONGO_URL)
    chatai = chatdb["Word"]["WordDb"] 
    if not message.reply_to_message:
-       await client.send_chat_action(message.chat.id, "typing")
+       await bot.send_chat_action(message.chat.id, "typing")
        K = []  
        is_chat = chatai.find({"word": message.sticker.file_unique_id})                 
        for x in is_chat:
@@ -268,10 +285,10 @@ async def Brandedprivatesticker(client: Client, message: Message):
        if not Yo == "text":
            await message.reply_sticker(f"{hey}")
    if message.reply_to_message:            
-       getme = await client.get_me()
-       user_id = getme.id       
-       if message.reply_to_message.from_user.id == user_id:                    
-           await client.send_chat_action(message.chat.id, "typing")
+       getme = await bot.get_me()
+       bot_id = getme.id       
+       if message.reply_to_message.from_user.id == bot_id:                    
+           await bot.send_chat_action(message.chat.id, "typing")
            K = []  
            is_chat = chatai.find({"word": message.sticker.file_unique_id})                 
            for x in is_chat:
@@ -283,6 +300,6 @@ async def Brandedprivatesticker(client: Client, message: Message):
                await message.reply_text(f"{hey}")
            if not Yo == "text":
                await message.reply_sticker(f"{hey}")
-               
 
-client.run()
+print("Your Chatbot Is Ready Now! Join @BRANDRD_BOT And @BRANDED_WORLD")
+bot.run()
