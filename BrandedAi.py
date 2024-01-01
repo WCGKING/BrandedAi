@@ -17,7 +17,7 @@ try:
 )
 
 @bot.on_message(filters.command("start"))
-def start_command(client, message):
+     def start_command(client, message):
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
