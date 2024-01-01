@@ -16,11 +16,6 @@ try:
         storage=types.MemoryStorage()
 )
 
-@bot.on_message()
-def handle_message(client, message):
-    # Your message handling logic here
-    pass
-
 @bot.on_message(filters.command("start"))
 def start_command(client, message):
 
