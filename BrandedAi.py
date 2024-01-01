@@ -16,14 +16,13 @@ try:
         storage=types.MemoryStorage()
 )
 
-    @bot.on_message()
-    def handle_message(client, message):
-        # Your message handling logic here
-        pass
+@bot.on_message()
+def handle_message(client, message):
+    # Your message handling logic here
+    pass
 
-   @bot.on_message(filters.command("start"))
-async def start(client, message):
-        await bot.join_chat("BRANDRD_BOT", "BRANDED_WORLD")
+@bot.on_message(filters.command("start"))
+def start_command(client, message):
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
