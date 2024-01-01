@@ -1,34 +1,36 @@
-from pyrogram import Client, filters
-from pyrogram.types import *
-from pymongo import MongoClient
-import requests
-import random
-import os
-import re
+from pyrogram import Client, errors
+from pyrogram import types
+from pyrogram.errors import RPCError
+from pyrogram.errors import FloodWait
 
+STRING = "your_bot_token_here"
+API_ID = "your_api_id_here"
+API_HASH = "your_api_hash_here"
 
-API_ID = os.environ.get("API_ID", None) 
-API_HASH = os.environ.get("API_HASH", None) 
-STRING = os.environ.get("STRING", None) 
-MONGO_URL = os.environ.get("MONGO_URL", None)
+try:
+    # Create a Pyrogram client with MemoryStorage
+    bot = Client(
+        "my_bot",
+        api_id=API_ID,
+        api_hash=API_HASH,
+        storage=types.MemoryStorage()
+    )
 
+    @bot.on_message()
+    def handle_message(client, message):
+        # Your message handling logic here
+        pass
 
-bot = Client(STRING, API_ID, API_HASH)
-
-
-async def is_admins(chat_id: int):
-    return [
-        member.user.id
-        async for member in bot.iter_chat_members(
-            chat_id, filter="administrators"
-        )
-    ]
-
-
-@bot.on_message(filters.command("start"))
-async def start(client, message):
-        await bot.join_chat("BRANDRD-BOT", "BRANDED_WORLD")
-
+    # Start the bot
+    bot.run()
+except errors.APIException as e:
+    print(f"API Exception: {e}")
+except RPCError as e:
+    print(f"RPC Error: {e}")
+except FloodWait as e:
+    print(f"FloodWait: {e}")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
