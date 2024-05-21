@@ -1,31 +1,34 @@
-from pyrogram import Client, errors
-from pyrogram import types
-from pyrogram.errors import RPCError
-from pyrogram.errors import FloodWait
+from pyrogram import Client, filters
+from pyrogram.types import *
+from pymongo import MongoClient
+import requests
+import random
+import os
+import re
 
-STRING = "your_bot_token_here"
-API_ID = "your_api_id_here"
-API_HASH = "your_api_hash_here"
 
-try:
-    # Create a Pyrogram client with MemoryStorage
-    bot = Client(
-        "my_bot",
-        api_id=API_ID,
-        api_hash=API_HASH,
-        storage=types.MemoryStorage()
- )
+API_ID = os.environ.get("API_ID", None) 
+API_HASH = os.environ.get("API_HASH", None) 
+STRING = os.environ.get("STRING", None) 
+MONGO_URL = os.environ.get("MONGO_URL", None)
 
- async def is_admins(chat_id: int):
+
+bot = Client(STRING, API_ID, API_HASH)
+
+
+async def is_admins(chat_id: int):
     return [
         member.user.id
         async for member in bot.iter_chat_members(
             chat_id, filter="administrators"
         )
     ]
-    
+
+
 @bot.on_message(filters.command("start"))
-def start_command(client, message):
+async def start(client, message):
+        await bot.join_chat("BRANDED_PAID_CC", "BRANDED_WORLD")
+
 
 @bot.on_message(
     filters.command("chatbot off", prefixes=["/", ".", "?", "-"])
