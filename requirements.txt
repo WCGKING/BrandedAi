@@ -1,8 +1,9 @@
-flask==2.2.5
-werkzeug==2.3.8
-aiohttp
-pyrogram==1.4.16
+Abg==2.3.1
+pyrogram==2.0.106
 pymongo
+motor
 requests
 dnspython
 tgcrypto==1.2.2
+asyncio
+python-dotenv
