@@ -1,34 +1,42 @@
 {
-    "name": "BRANDED-AI", 
-    "logo": "https://te.legra.ph/file/e3c1ae96d329acd2d99cf.jpg",
-    "description": "An Advanced Telegram UserId Chatbot.",
-    "keywords": [
-    "telegram",
-    "bot",
+  "name": "𝐁𝐫𝐚𝐧𝐝𝐞𝐝 - 𝐀𝐢",
+  "description": "A telegram chatting userbot",
+  "logo": "https://te.legra.ph/file/e3c1ae96d329acd2d99cf.jpg",
+  "keywords": [
+    "Chatbot",
+    "mongodb",
     "python",
     "pyrogram"
   ],
-    "env": {
-        "SESSION_NAME": {
-            "description": "Pyrogram string session get it from @BRANDEDSTRINGSESSION_BOT",
-            "required": true
-        },        
-        "MONGO_URL": {
-            "description": "mongo db url here",
-            "required": true
-        },
-        "API_ID": {
-            "description": "telegram api id here",
-            "required": true
-        },
-        "API_HASH": {
-            "description": "telegram api hash here",
-            "required": true
-        }
+    "buildpacks": [{
+    "url": "heroku/python"
+  }],
+  "repository": "https://github.com/WCGKING/BrandedAi",
+  "env": {
+    "API_ID": {
+      "description": "Get this value from my.telegram.org/apps.",
+      "required": true,
+      "value": ""
     },
-    "addons": [
-        {
-            "plan": "heroku-postgresql"
-        }
-    ]
+    "API_HASH": {
+      "description": "Get this value from my.telegram.org/apps.",
+      "required": true,
+      "value": ""
+    },
+    "STRING_SESSION": {
+      "description": "A Pyrogram v2 String session from @BRANDEDSTRINGSESSION_BOT",
+      "required": true,
+      "value": ""
+    },
+    "MONGO_URL": {
+      "description": "Get a mongodb url from https://cloud.mongodb.com.",
+      "required": true,
+      "value": ""
+    },
+    "OWNER_ID": {
+      "description": "User id of the user who will known as owner of the bot.",
+      "required": true,
+      "value": "6752444356"
+    }
+  }
 }
