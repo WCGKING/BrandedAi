@@ -17,7 +17,7 @@ async def anony_boot():
     for all_module in ALL_MODULES:
         importlib.import_module("BrandedAi.modules." + all_module)
 
-    LOGGER.info(f"@{Branded.username} Started.")
+    LOGGER.info(f"𝐁𝐫𝐚𝐧𝐝𝐞𝐝  𝐀𝐢 𝐁𝐨𝐭 𝐒𝐭𝐚𝐫𝐭𝐞𝐝.")
     await idle()
 
 
