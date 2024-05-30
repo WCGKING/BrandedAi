@@ -23,13 +23,13 @@ db = mongo.Anonymous
 OWNER = config.OWNER_ID
 
 class Branded(Client):
-    def __init__(self):
-        super().__init__(
+   def __init__(self):
+       super().__init__(
             name="Branded",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             lang_code="en",
-            bot_token=config.BOT_TOKEN,
+            session_string=config.STRING_SESSION,
             in_memory=True,
             parse_mode=ParseMode.DEFAULT,
         )
