@@ -83,4 +83,12 @@ async def repo(_, m: Message):
 @Branded.on_message(filters.new_chat_members)
 async def welcome(_, m: Message):
     for member in m.new_chat_members:
-        await m.reply_photo(photo=random.choice(IMG), caption=START)
+        images = [img for img in IMG if img and str(img).strip()]
+
+if images:
+    await m.reply_photo(
+        photo=random.choice(images),
+        caption=START
+    )
+else:
+    await m.reply_text(START)
