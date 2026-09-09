@@ -85,10 +85,10 @@ async def welcome(_, m: Message):
     for member in m.new_chat_members:
         images = [img for img in IMG if img and str(img).strip()]
 
-if images:
-    await m.reply_photo(
-        photo=random.choice(images),
-        caption=START
-    )
-else:
-    await m.reply_text(START)
+        if images:
+           await m.reply_photo(
+               photo=random.choice(images),
+               caption=START
+           )
+       else:
+           await m.reply_text(START)
