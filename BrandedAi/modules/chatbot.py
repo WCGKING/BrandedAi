@@ -1,4 +1,3 @@
-```python
 import random
 
 from Abg.chat_status import adminsOnly
