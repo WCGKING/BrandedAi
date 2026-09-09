@@ -1,6 +1,7 @@
+```python
 import random
-from Abg.chat_status import adminsOnly
 
+from Abg.chat_status import adminsOnly
 from pymongo import MongoClient
 from pyrogram import Client, filters
 from pyrogram.enums import ChatAction
@@ -8,289 +9,602 @@ from pyrogram.types import InlineKeyboardMarkup, Message
 
 from config import MONGO_URL
 from BrandedAi import Branded
-from BrandedAi.modules.helpers import CHATBOT_ON, is_admins
+from BrandedAi.modules.helpers import CHATBOT_ON
 
+
+# ---------------------------------------------------------
+# HELPERS
+# ---------------------------------------------------------
+
+def get_chat_db():
+    return MongoClient(MONGO_URL)
+
+
+async def safe_typing(client: Client, chat_id: int):
+    """
+    Send typing action without allowing Telegram permission
+    errors to break the chatbot handler.
+    """
+    try:
+        await client.send_chat_action(chat_id, ChatAction.TYPING)
+    except Exception:
+        pass
+
+
+def is_command_message(message: Message) -> bool:
+    """
+    Ignore normal chatbot processing for commands.
+    """
+    text = message.text or message.caption or ""
+
+    return text.startswith(("!", "/", "?", "@", "#"))
+
+
+async def send_chatbot_response(message: Message, text, response_type):
+    """
+    Safely send a chatbot response.
+    Prevents empty messages and invalid sticker IDs.
+    """
+
+    if not text:
+        return
+
+    text = str(text).strip()
+
+    if not text:
+        return
+
+    try:
+        if response_type == "sticker":
+            # Sticker file_id must exist.
+            await message.reply_sticker(text)
+        else:
+            await message.reply_text(text)
+
+    except Exception as e:
+        print(f"Chatbot response error: {e}")
+
+
+def get_random_response(chatai, word):
+    """
+    Find a random response for a word.
+    Returns (text, response_type) or (None, None).
+    """
+
+    if not word:
+        return None, None
+
+    try:
+        results = list(chatai.find({"word": word}))
+
+        if not results:
+            return None, None
+
+        valid_results = []
+
+        for item in results:
+            response = item.get("text")
+
+            if response:
+                response = str(response).strip()
+
+            if not response:
+                continue
+
+            response_type = item.get("check", "none")
+
+            valid_results.append(
+                (
+                    response,
+                    response_type,
+                )
+            )
+
+        if not valid_results:
+            return None, None
+
+        return random.choice(valid_results)
+
+    except Exception as e:
+        print(f"MongoDB chatbot lookup error: {e}")
+        return None, None
+
+
+def get_vick_status(vick, chat_id):
+    try:
+        return vick.find_one({"chat_id": chat_id})
+    except Exception as e:
+        print(f"Vick DB error: {e}")
+        return None
+
+
+# ---------------------------------------------------------
+# CHATBOT ON/OFF COMMAND
+# ---------------------------------------------------------
 
 @Branded.on_cmd("chatbot", group_only=True)
 @adminsOnly("can_delete_messages")
 async def chaton_(_, m: Message):
     await m.reply_text(
-        f"ᴄʜᴀᴛ: {m.chat.title}\n**ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ᴛᴏ ᴇɴᴀʙʟᴇ/ᴅɪsᴀʙʟᴇ ᴄʜᴀᴛʙᴏᴛ.**",
+        f"ᴄʜᴀᴛ: {m.chat.title}\n"
+        "**ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴩᴛɪᴏɴ ᴛᴏ ᴇɴᴀʙʟᴇ/ᴅɪsᴀʙʟᴇ ᴄʜᴀᴛʙᴏᴛ.**",
         reply_markup=InlineKeyboardMarkup(CHATBOT_ON),
     )
-    return
 
 
-@Branded.on_message(
-    (filters.text | filters.sticker | filters.group) & ~filters.private & ~filters.bot, group=4
-)
-async def chatbot_text(client: Client, message: Message):
-    try:
-        if (
-            message.text.startswith("!")
-            or message.text.startswith("/")
-            or message.text.startswith("?")
-            or message.text.startswith("@")
-            or message.text.startswith("#")
-        ):
-            return
-    except Exception:
-        pass
-    chatdb = MongoClient(MONGO_URL)
-    chatai = chatdb["Word"]["WordDb"]
-
-    if not message.reply_to_message:
-        vickdb = MongoClient(MONGO_URL)
-        vick = vickdb["VickDb"]["Vick"]
-        is_vick = vick.find_one({"chat_id": message.chat.id})
-        if not is_vick:
-            await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-            K = []
-            is_chat = chatai.find({"word": message.text})
-            k = chatai.find_one({"word": message.text})
-            if k:
-                for x in is_chat:
-                    K.append(x["text"])
-                hey = random.choice(K)
-                is_text = chatai.find_one({"text": hey})
-                Yo = is_text["check"]
-                if Yo == "sticker":
-                    await message.reply_sticker(f"{hey}")
-                if not Yo == "sticker":
-                    await message.reply_text(f"{hey}")
-
-    if message.reply_to_message:
-        vickdb = MongoClient(MONGO_URL)
-        vick = vickdb["VickDb"]["Vick"]
-        is_vick = vick.find_one({"chat_id": message.chat.id})
-        if message.reply_to_message.from_user.id == client.id:
-            if not is_vick:
-                await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-                K = []
-                is_chat = chatai.find({"word": message.text})
-                k = chatai.find_one({"word": message.text})
-                if k:
-                    for x in is_chat:
-                        K.append(x["text"])
-                    hey = random.choice(K)
-                    is_text = chatai.find_one({"text": hey})
-                    Yo = is_text["check"]
-                    if Yo == "sticker":
-                        await message.reply_sticker(f"{hey}")
-                    if not Yo == "sticker":
-                        await message.reply_text(f"{hey}")
-        if not message.reply_to_message.from_user.id == client.id:
-            if message.sticker:
-                is_chat = chatai.find_one(
-                    {
-                        "word": message.reply_to_message.text,
-                        "id": message.sticker.file_unique_id,
-                    }
-                )
-                if not is_chat:
-                    chatai.insert_one(
-                        {
-                            "word": message.reply_to_message.text,
-                            "text": message.sticker.file_id,
-                            "check": "sticker",
-                            "id": message.sticker.file_unique_id,
-                        }
-                    )
-            if message.text:
-                is_chat = chatai.find_one(
-                    {"word": message.reply_to_message.text, "text": message.text}
-                )
-                if not is_chat:
-                    chatai.insert_one(
-                        {
-                            "word": message.reply_to_message.text,
-                            "text": message.text,
-                            "check": "none",
-                        }
-                    )
-
+# ---------------------------------------------------------
+# TEXT CHATBOT
+# ---------------------------------------------------------
 
 @Branded.on_message(
-    (filters.sticker | filters.group | filters.text) & ~filters.private & ~filters.bot, group=4
-)
-async def chatbot_sticker(client: Client, message: Message):
-    try:
-        if (
-            message.text.startswith("!")
-            or message.text.startswith("/")
-            or message.text.startswith("?")
-            or message.text.startswith("@")
-            or message.text.startswith("#")
-        ):
-            return
-    except Exception:
-        pass
-    chatdb = MongoClient(MONGO_URL)
-    chatai = chatdb["Word"]["WordDb"]
-
-    if not message.reply_to_message:
-        vickdb = MongoClient(MONGO_URL)
-        vick = vickdb["VickDb"]["Vick"]
-        is_vick = vick.find_one({"chat_id": message.chat.id})
-        if not is_vick:
-            await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-            K = []
-            is_chat = chatai.find({"word": message.sticker.file_unique_id})
-            k = chatai.find_one({"word": message.text})
-            if k:
-                for x in is_chat:
-                    K.append(x["text"])
-                hey = random.choice(K)
-                is_text = chatai.find_one({"text": hey})
-                Yo = is_text["check"]
-                if Yo == "text":
-                    await message.reply_text(f"{hey}")
-                if not Yo == "text":
-                    await message.reply_sticker(f"{hey}")
-
-    if message.reply_to_message:
-        vickdb = MongoClient(MONGO_URL)
-        vick = vickdb["VickDb"]["Vick"]
-        is_vick = vick.find_one({"chat_id": message.chat.id})
-        if message.reply_to_message.from_user.id == Client.id:
-            if not is_vick:
-                await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-                K = []
-                is_chat = chatai.find({"word": message.text})
-                k = chatai.find_one({"word": message.text})
-                if k:
-                    for x in is_chat:
-                        K.append(x["text"])
-                    hey = random.choice(K)
-                    is_text = chatai.find_one({"text": hey})
-                    Yo = is_text["check"]
-                    if Yo == "text":
-                        await message.reply_text(f"{hey}")
-                    if not Yo == "text":
-                        await message.reply_sticker(f"{hey}")
-        if not message.reply_to_message.from_user.id == Client.id:
-            if message.text:
-                is_chat = chatai.find_one(
-                    {
-                        "word": message.reply_to_message.sticker.file_unique_id,
-                        "text": message.text,
-                    }
-                )
-                if not is_chat:
-                    toggle.insert_one(
-                        {
-                            "word": message.reply_to_message.sticker.file_unique_id,
-                            "text": message.text,
-                            "check": "text",
-                        }
-                    )
-            if message.sticker:
-                is_chat = chatai.find_one(
-                    {
-                        "word": message.reply_to_message.sticker.file_unique_id,
-                        "text": message.sticker.file_id,
-                    }
-                )
-                if not is_chat:
-                    chatai.insert_one(
-                        {
-                            "word": message.reply_to_message.sticker.file_unique_id,
-                            "text": message.sticker.file_id,
-                            "check": "none",
-                        }
-                    )
-
-
-@Branded.on_message(
-    (filters.text | filters.sticker | filters.group) & ~filters.private & ~filters.bot, group=4
-)
-async def chatbot_pvt(client: Client, message: Message):
-    try:
-        if (
-            message.text.startswith("!")
-            or message.text.startswith("/")
-            or message.text.startswith("?")
-            or message.text.startswith("@")
-            or message.text.startswith("#")
-        ):
-            return
-    except Exception:
-        pass
-    chatdb = MongoClient(MONGO_URL)
-    chatai = chatdb["Word"]["WordDb"]
-    if not message.reply_to_message:
-        await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-        K = []
-        is_chat = chatai.find({"word": message.text})
-        for x in is_chat:
-            K.append(x["text"])
-        hey = random.choice(K)
-        is_text = chatai.find_one({"text": hey})
-        Yo = is_text["check"]
-        if Yo == "sticker":
-            await message.reply_sticker(f"{hey}")
-        if not Yo == "sticker":
-            await message.reply_text(f"{hey}")
-    if message.reply_to_message:
-        if message.reply_to_message.from_user.id == client.id:
-            await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-            K = []
-            is_chat = chatai.find({"word": message.text})
-            for x in is_chat:
-                K.append(x["text"])
-            hey = random.choice(K)
-            is_text = chatai.find_one({"text": hey})
-            Yo = is_text["check"]
-            if Yo == "sticker":
-                await message.reply_sticker(f"{hey}")
-            if not Yo == "sticker":
-                await message.reply_text(f"{hey}")
-
-
-@Branded.on_message(
-    (filters.sticker | filters.sticker | filters.group)
+    (filters.text | filters.sticker | filters.group)
     & ~filters.private
     & ~filters.bot,
     group=4,
 )
-async def chatbot_sticker_pvt(client: Client, message: Message):
+async def chatbot_text(client: Client, message: Message):
+
+    if is_command_message(message):
+        return
+
+    chatdb = get_chat_db()
+
     try:
-        if (
-            message.text.startswith("!")
-            or message.text.startswith("/")
-            or message.text.startswith("?")
-            or message.text.startswith("@")
-            or message.text.startswith("#")
-        ):
+        chatai = chatdb["Word"]["WordDb"]
+        vick = chatdb["VickDb"]["Vick"]
+
+        is_vick = get_vick_status(vick, message.chat.id)
+
+        # -------------------------------------------------
+        # NORMAL MESSAGE
+        # -------------------------------------------------
+
+        if not message.reply_to_message:
+
+            if is_vick:
+                return
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.text
+
+            if not word:
+                return
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
             return
-    except Exception:
-        pass
-    chatdb = MongoClient(MONGO_URL)
-    chatai = chatdb["Word"]["WordDb"]
-    if not message.reply_to_message:
-        await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-        K = []
-        is_chat = chatai.find({"word": message.sticker.file_unique_id})
-        for x in is_chat:
-            K.append(x["text"])
-        hey = random.choice(K)
-        is_text = chatai.find_one({"text": hey})
-        Yo = is_text["check"]
-        if Yo == "text":
-            await message.reply_text(f"{hey}")
-        if not Yo == "text":
-            await message.reply_sticker(f"{hey}")
-    if message.reply_to_message:
-        if message.reply_to_message.from_user.id == client.id:
-            await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-            K = []
-            is_chat = chatai.find({"word": message.sticker.file_unique_id})
-            for x in is_chat:
-                K.append(x["text"])
-            hey = random.choice(K)
-            is_text = chatai.find_one({"text": hey})
-            Yo = is_text["check"]
-            if Yo == "text":
-                await message.reply_text(f"{hey}")
-            if not Yo == "text":
-                await message.reply_sticker(f"{hey}")
+
+        # -------------------------------------------------
+        # REPLY TO BOT
+        # -------------------------------------------------
+
+        replied_user = message.reply_to_message.from_user
+
+        if replied_user and replied_user.id == client.id:
+
+            if is_vick:
+                return
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.text
+
+            if not word:
+                return
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+            return
+
+        # -------------------------------------------------
+        # LEARN REPLY TO STICKER
+        # -------------------------------------------------
+
+        replied_message = message.reply_to_message
+
+        if replied_message.sticker:
+
+            sticker_word = replied_message.text
+
+            if sticker_word:
+                sticker_word = sticker_word.strip()
+
+            sticker_id = replied_message.sticker.file_unique_id
+
+            if sticker_id:
+
+                existing = chatai.find_one(
+                    {
+                        "word": sticker_word,
+                        "id": sticker_id,
+                    }
+                )
+
+                if not existing:
+                    chatai.insert_one(
+                        {
+                            "word": sticker_word,
+                            "text": sticker_id,
+                            "check": "sticker",
+                            "id": sticker_id,
+                        }
+                    )
+
+        # -------------------------------------------------
+        # LEARN TEXT REPLY
+        # -------------------------------------------------
+
+        if message.text and replied_message.text:
+
+            word = replied_message.text.strip()
+            response = message.text.strip()
+
+            if word and response:
+
+                existing = chatai.find_one(
+                    {
+                        "word": word,
+                        "text": response,
+                    }
+                )
+
+                if not existing:
+                    chatai.insert_one(
+                        {
+                            "word": word,
+                            "text": response,
+                            "check": "none",
+                        }
+                    )
+
+    except Exception as e:
+        print(f"chatbot_text error: {e}")
+
+    finally:
+        chatdb.close()
+
+
+# ---------------------------------------------------------
+# STICKER CHATBOT
+# ---------------------------------------------------------
+
+@Branded.on_message(
+    (filters.sticker | filters.text | filters.group)
+    & ~filters.private
+    & ~filters.bot,
+    group=4,
+)
+async def chatbot_sticker(client: Client, message: Message):
+
+    if is_command_message(message):
+        return
+
+    # Only process this handler when a sticker is involved.
+    if not message.sticker and not (
+        message.reply_to_message and message.reply_to_message.sticker
+    ):
+        return
+
+    chatdb = get_chat_db()
+
+    try:
+        chatai = chatdb["Word"]["WordDb"]
+        vick = chatdb["VickDb"]["Vick"]
+
+        is_vick = get_vick_status(vick, message.chat.id)
+
+        # -------------------------------------------------
+        # NORMAL STICKER
+        # -------------------------------------------------
+
+        if message.sticker and not message.reply_to_message:
+
+            if is_vick:
+                return
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.sticker.file_unique_id
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+            return
+
+        # -------------------------------------------------
+        # REPLY TO BOT
+        # -------------------------------------------------
+
+        if message.reply_to_message:
+
+            replied_user = message.reply_to_message.from_user
+
+            if replied_user and replied_user.id == client.id:
+
+                if is_vick:
+                    return
+
+                await safe_typing(client, message.chat.id)
+
+                if message.sticker:
+                    word = message.sticker.file_unique_id
+                else:
+                    word = message.text
+
+                if not word:
+                    return
+
+                hey, response_type = get_random_response(
+                    chatai,
+                    word,
+                )
+
+                if not hey:
+                    return
+
+                await send_chatbot_response(
+                    message,
+                    hey,
+                    response_type,
+                )
+
+                return
+
+            # -------------------------------------------------
+            # LEARN REPLY TO STICKER
+            # -------------------------------------------------
+
+            replied_sticker = message.reply_to_message.sticker
+
+            if replied_sticker:
+
+                sticker_word = replied_sticker.file_unique_id
+
+                # User replies with text to a sticker
+                if message.text:
+
+                    response = message.text.strip()
+
+                    if response:
+
+                        existing = chatai.find_one(
+                            {
+                                "word": sticker_word,
+                                "text": response,
+                            }
+                        )
+
+                        if not existing:
+                            chatai.insert_one(
+                                {
+                                    "word": sticker_word,
+                                    "text": response,
+                                    "check": "text",
+                                }
+                            )
+
+                # User replies with another sticker
+                if message.sticker:
+
+                    response = message.sticker.file_id
+
+                    if response:
+
+                        existing = chatai.find_one(
+                            {
+                                "word": sticker_word,
+                                "text": response,
+                            }
+                        )
+
+                        if not existing:
+                            chatai.insert_one(
+                                {
+                                    "word": sticker_word,
+                                    "text": response,
+                                    "check": "sticker",
+                                }
+                            )
+
+    except Exception as e:
+        print(f"chatbot_sticker error: {e}")
+
+    finally:
+        chatdb.close()
+
+
+# ---------------------------------------------------------
+# PRIVATE TEXT CHATBOT
+# ---------------------------------------------------------
+
+@Branded.on_message(
+    filters.text & filters.private & ~filters.bot,
+    group=4,
+)
+async def chatbot_pvt(client: Client, message: Message):
+
+    if is_command_message(message):
+        return
+
+    chatdb = get_chat_db()
+
+    try:
+        chatai = chatdb["Word"]["WordDb"]
+
+        # -------------------------------------------------
+        # NORMAL PRIVATE MESSAGE
+        # -------------------------------------------------
+
+        if not message.reply_to_message:
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.text
+
+            if not word:
+                return
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+            return
+
+        # -------------------------------------------------
+        # REPLY TO BOT
+        # -------------------------------------------------
+
+        replied_user = message.reply_to_message.from_user
+
+        if replied_user and replied_user.id == client.id:
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.text
+
+            if not word:
+                return
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+    except Exception as e:
+        print(f"chatbot_pvt error: {e}")
+
+    finally:
+        chatdb.close()
+
+
+# ---------------------------------------------------------
+# PRIVATE STICKER CHATBOT
+# ---------------------------------------------------------
+
+@Branded.on_message(
+    filters.sticker & filters.private & ~filters.bot,
+    group=4,
+)
+async def chatbot_sticker_pvt(client: Client, message: Message):
+
+    if not message.sticker:
+        return
+
+    chatdb = get_chat_db()
+
+    try:
+        chatai = chatdb["Word"]["WordDb"]
+
+        # -------------------------------------------------
+        # NORMAL PRIVATE STICKER
+        # -------------------------------------------------
+
+        if not message.reply_to_message:
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.sticker.file_unique_id
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+            return
+
+        # -------------------------------------------------
+        # REPLY TO BOT
+        # -------------------------------------------------
+
+        replied_user = message.reply_to_message.from_user
+
+        if replied_user and replied_user.id == client.id:
+
+            await safe_typing(client, message.chat.id)
+
+            word = message.sticker.file_unique_id
+
+            hey, response_type = get_random_response(
+                chatai,
+                word,
+            )
+
+            if not hey:
+                return
+
+            await send_chatbot_response(
+                message,
+                hey,
+                response_type,
+            )
+
+    except Exception as e:
+        print(f"chatbot_sticker_pvt error: {e}")
+
+    finally:
+        chatdb.close()
+```
