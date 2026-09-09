@@ -606,4 +606,3 @@ async def chatbot_sticker_pvt(client: Client, message: Message):
 
     finally:
         chatdb.close()
-```
